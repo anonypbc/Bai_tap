@@ -166,7 +166,7 @@ public:
 class PaladinBag : public BaseBag{
 public:
     PaladinBag(BaseKnight *knight, int phoenix_I, int antidote) : BaseBag(knight, phoenix_I, antidote) {
-        this ->capacity = -1;
+        this ->capacity = 0;
         for(int i = 0; i < phoenix_I;i++) {
             insertFirst(new PhoenixDownI());
             count++;
@@ -242,12 +242,74 @@ void BaseBag::remove(){
     delete temp;
 }
 BaseBag::~BaseBag() {
-    delete knight;
-    delete head; 
+    while(count){
+        count--;
+        Node* temp = head;
+        head = head->next;
+        delete temp->item;
+        delete temp;
+    }
 }
 /* * * END implementation of class BaseBag * * */
 
 /* * * BEGIN implementation of class BaseKnight * * */
+void BaseKnight::setBag(BaseBag *bag){
+    this ->bag = bag;
+}
+
+int BaseKnight::getID() {
+    return id;
+}
+int BaseKnight::getMaxHP() {
+    return maxhp;
+}
+void BaseKnight::setHP(int hp) {
+    this ->hp = hp;
+}
+int BaseKnight::getHP() {
+    return hp; 
+}
+void BaseKnight::setGil(int gil) {
+    this ->gil = gil;
+}
+int BaseKnight::getGil() {
+    return gil;
+}
+int BaseKnight::getPhoenix() {
+    return PhoenixDownI;
+}
+int BaseKnight::getAnti() {
+    return antidote;
+}
+int BaseKnight::getType() {
+    return knightType;
+}
+bool BaseKnight::getPoison() {
+    return isPoisoned; 
+}
+void BaseKnight::setPoison(bool Poison) {
+    this ->isPoisoned = Poison;
+}
+int BaseKnight::getLev() {
+    return level;
+}
+void BaseKnight::setLev(int lev) {
+    this ->level = lev;
+}
+int BaseKnight::getExcessiveGil() {
+    return excessiveGil;
+}
+void BaseKnight::setExcessiveGil(int excessiveGil) {
+    this ->excessiveGil = excessiveGil;
+
+    
+}
+int BaseKnight::getBaseDame() {
+    return KnightBaseDame;
+}
+BaseKnight::~BaseKnight() {
+    delete bag;  
+}
 class PaladinKnight : public BaseKnight {
 public:
         PaladinKnight(int id, int maxhp, int level, int gil, int antidote, int PhoenixDownI) : BaseKnight (id, maxhp, level, gil, antidote, PhoenixDownI) {
@@ -714,18 +776,13 @@ bool ArmyKnights::adventure(Events * events){
 
         int count_event = events->get(i);
         // cout << count_event << endl;
-        if(count_event >= 1 && count_event <= 10){
+        if(count_event >= 1 && count_event <= 11){
             this->fight(BaseOpponents::create(i,OpponentType(count_event)));
-            
-        }
-        if (count_event == 11) {
-            this->fight(BaseOpponents::create(i,OpponentType(11)));
-            if (knight[i] ->getHP() >0) {
+            if(BaseOpponents::isWinHades){
                 if (this ->check->checkPaladinShield(head) == false) {
-                    
+                    add -> insertHead(head, 95);
                 }
-            } 
-            add ->print(head);
+            }
         }
         else if (events->get(i) == 95) {
             add -> insertHead(head, 95);
@@ -738,6 +795,7 @@ bool ArmyKnights::adventure(Events * events){
         }
         else if (events->get(i) == 98) {
             if (this ->check ->checkTreasure(head)) {
+                this ->hasExcaliburSword();
             }
         }
         else if(count_event == 99){
@@ -816,12 +874,10 @@ void ArmyKnights::printResult(bool win) const {
     cout << (win ? "WIN" : "LOSE") << endl;
 }
 ArmyKnights::ArmyKnights(const string & file_armyknights) {
-    ifstream army("tc1_armyknights");
+    ifstream army(file_armyknights);
         army >> count_knight;
-       // cout << count_knight << endl;
         army.ignore();
-        info = new string[count_knight];
-        
+        knight = new BaseKnight*[count_knight];
         
         int count = 0;
         while(getline(army,kn)){
@@ -829,17 +885,13 @@ ArmyKnights::ArmyKnights(const string & file_armyknights) {
             ++count;
         }
         for (int i = 0; i < count_knight; i++) {
-            // shield = spear = hair = sword = false;
             std::istringstream iss(info[i]);
             int maxhp, level, phoenixdownI, gil, antidote;
             
             int id = i+1;
-            // cout << id << endl;
             iss >> maxhp >> level >> phoenixdownI >> gil >> antidote;
             
-            //cout << a + 56<< " ";
             knight[i] = BaseKnight::create(id, maxhp, level, gil,antidote, phoenixdownI);
-            // cout << knight[i] ->toString() << endl;
             if(knight[i]->getType() == DRAGON) {
                 knight[i]->setBag(new DragonBag(knight[i], knight[i]->getPhoenix(),knight[i]->getAnti()));
             }
@@ -869,7 +921,6 @@ bool ArmyKnights::hasExcaliburSword() const{
     return check->checkTreasure(head);
 }
 ArmyKnights::~ArmyKnights() {
-    delete info;
     delete knight;
     delete check;
     delete add;

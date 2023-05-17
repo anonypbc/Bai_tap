@@ -4,7 +4,6 @@
 #include "main.h"
 
 // #define DEBUG
-class BaseItem;
 class BaseKnight;
 class Events;
 class BaseBag;
@@ -28,20 +27,19 @@ public:
 
 class Node {
 public:
-    BaseItem* item;
-    Node* next;
+    BaseItem* item = nullptr;
+    Node* next = nullptr;
 };
 class BaseBag {
 protected:
     BaseKnight *knight;
-    Node *head;
+    Node *head = nullptr;
     int count;
     int capacity; 
 public:
     BaseBag(BaseKnight *knight, int phoenix, int anti) {
         this ->knight = knight;
         this ->count = 0;
-        this ->head = NULL; 
     };
     virtual void remove();
     virtual bool insertFirst(BaseItem * item);
@@ -78,63 +76,24 @@ public:
     static BaseKnight * create(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI); 
     string toString() const;
     virtual bool fight(BaseOpponents * opnt);
-    void setBag(BaseBag *bag){
-        this ->bag = bag;
-    }
-    BaseBag *getBag() {
-        return bag; 
-    }
-    int getID() {
-        return id;
-    }
-    int getMaxHP() {
-        return maxhp;
-    }
-    void setHP(int hp) {
-       this ->hp = hp;
-    }
-    int getHP() {
-        return hp; 
-    }
-    void setGil(int gil) {
-        this ->gil = gil;
-    }
-    int getGil() {
-        return gil;
-    }
-    int getPhoenix() {
-        return PhoenixDownI;
-    }
-    int getAnti() {
-        return antidote;
-    }
-    int getType() {
-        return knightType;
-    }
-    bool getPoison() {
-        return isPoisoned; 
-    }
-    void setPoison(bool Poison) {
-        this ->isPoisoned = Poison;
-    }
-    int getLev() {
-        return level;
-    }
-    void setLev(int lev) {
-        this ->level = lev;
-    }
-    int getExcessiveGil() {
-        return excessiveGil;
-    }
-    void setExcessiveGil(int excessiveGil) {
-        this ->excessiveGil = excessiveGil;
-    }
-    int getBaseDame() {
-        return KnightBaseDame;
-    }
-    ~BaseKnight() {
-        delete bag;  
-    }
+    void setBag(BaseBag *bag);
+    int getID();
+    int getMaxHP();
+    void setHP(int hp);
+    int getHP();
+    void setGil(int gil);
+    int getGil();
+    int getPhoenix();
+    int getAnti();
+    int getType();
+    bool getPoison();
+    void setPoison(bool Poison);
+    int getLev();
+    void setLev(int lev);
+    int getExcessiveGil();
+    void setExcessiveGil(int excessiveGil);
+    int getBaseDame();
+    ~BaseKnight();
 };
 class BaseOpponents{
 public:
@@ -208,7 +167,7 @@ public:
     NodeTreasure *next;
     NodeTreasure(int d){
         data = d;
-        next = NULL;
+        next = nullptr;
     };
 }; 
 struct addNode {
@@ -223,13 +182,13 @@ struct checkBool {
 };
 class ArmyKnights {
 protected:
-    string *info;
+    string info[1000];
     int count_knight;
     string kn;
-    BaseKnight **knight = new BaseKnight*[10000];
-    checkBool *check;
-    NodeTreasure* head = NULL; 
-    addNode *add;
+    BaseKnight **knight;
+    checkBool *check = nullptr;
+    NodeTreasure* head = nullptr; 
+    addNode *add = nullptr;
 public:
     ArmyKnights (const string & file_armyknights);
     ~ArmyKnights();
