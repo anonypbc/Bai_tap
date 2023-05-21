@@ -62,7 +62,7 @@ protected:
     int PhoenixDownI;
     bool isPoisoned = false;
     int excessiveGil;
-    int KnightBaseDame; 
+    double KnightBaseDame; 
 public:
     BaseKnight(int id, int maxhp, int level, int gil, int antidote, int PhoenixDownI) {
         this->id = id;
@@ -93,6 +93,7 @@ public:
     int getExcessiveGil();
     void setExcessiveGil(int excessiveGil);
     int getBaseDame();
+    
     ~BaseKnight();
 };
 class BaseOpponents{
@@ -161,34 +162,14 @@ public:
     OpponentType Type();
     void KnightStatus(BaseKnight* knight);
 };
-class NodeTreasure{
-public:
-    int data;
-    NodeTreasure *next;
-    NodeTreasure(int d){
-        data = d;
-        next = nullptr;
-    };
-}; 
-struct addNode {
-    void static insertHead(NodeTreasure *&head, int data);
-    void static print(NodeTreasure *head);
-};
-struct checkBool {
-    bool static checkTreasure(NodeTreasure* head);
-    bool static checkPaladinShield(NodeTreasure* head);
-    bool static checkLancelot(NodeTreasure* head);
-    bool static checkGuinevere(NodeTreasure* head);
-};
+
 class ArmyKnights {
 protected:
     string info[1000];
     int count_knight;
     string kn;
     BaseKnight **knight;
-    checkBool *check = nullptr;
-    NodeTreasure* head = nullptr; 
-    addNode *add = nullptr;
+    bool PaladinShield, LancelotSpear, GuinevereHair, ExcaliburSword;
 public:
     ArmyKnights (const string & file_armyknights);
     ~ArmyKnights();
